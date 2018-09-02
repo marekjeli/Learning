@@ -1,119 +1,89 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
+
 using namespace std;
 
-int main()
-{
-    int a, k;
-    cin>>a>>k;
-    string kod1="abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-    string kod2="ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    string rkod1="zyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcba";
-    string rkod2="ZYXWVUTSRQPONMLKJIHGFEDCBAZYXWVUTSRQPONMLKJIHGFEDCBA";
-    string znaki=",.<>?-_;:*/\|!@#$%^&*)(][}{'`+1234567890";
+typedef char( * actionFunction )(char, int);
+
+const int ALPHABET_SIZE = 26;
+
+void validateA(int a) {
+    if(a != 1 && a != 2) {
+        cout << "First parameter must be either 1 or 2";
+        exit (EXIT_FAILURE);
+    }
+}
+
+void validateK(int k) {
+    if ( k < 1 || k > 25) {
+        cout << "The parameter \'k\' must be from [1,25] range";
+        exit (EXIT_FAILURE);
+    }
+}
+
+bool isSmallLetter(char c) {
+    return c >= 'a' && c <= 'z';
+}
+
+bool isCapitalLetter(char c) {
+    return c >= 'A' && c <= 'Z';
+}
+
+char shiftCharacter(char c, int offset) {
+    int characterIndex = (int) c;
+    if(isSmallLetter(c)) {
+        int firstCharacterIndex = (int) 'a';
+        int transformedCharacterIndex = ((ALPHABET_SIZE + characterIndex - firstCharacterIndex + offset) % ALPHABET_SIZE) + firstCharacterIndex;
+        return ((char)transformedCharacterIndex);
+    } else if(isCapitalLetter(c)) {
+        int firstCharacterIndex = (int) 'A';
+        int transformedCharacterIndex = ((ALPHABET_SIZE + characterIndex - firstCharacterIndex + offset) % ALPHABET_SIZE) + firstCharacterIndex;
+        return ((char)transformedCharacterIndex);
+    } else {
+        return c; // print it as it is
+    }
+}
+
+char encode(char c, int offset) {
+    return shiftCharacter(c, offset);
+}
+
+char decode(char c, int offset) {
+    return shiftCharacter(c, -offset);
+}
+
+void processCharacter(char c, int offset, char( * action )(char, int)) {
+    cout << action(c, offset);
+}
+
+int main() {
+
+    int a;
+    cin >> a;
+    validateA(a);
+
+    int k;
+    cin >> k;
+    validateK(k);
+
     string in;
-    cin>>in;
-    bool found=false;
-    int k1 = kod1.size(), v2 = in.size(), v3 = znaki.size(), k2 = kod2.size(), rk1 = rkod1.size(), rk2 = rkod2.size();
-    if(a==1)
-    {
-        for(int i=0;i<v2;i++)
-        {
-            for(int j=0;j<k1;j++)
-            {
-                if(kod1[j]==in[i])
-                {
-                  cout<<kod1[j+k];
-                  found=true;
-                  break;
-                }
-                  else{
-                  found=false;}
+    cin >> in;
+    int inputSize = in.size();
 
-            }
-                if(found==false)
-                    {
-                    for(int j2=0;j2<k2;j2++)
-                        {
-                        if(kod2[j2]==in[i])
-                                {
-                           found=true;
-                           cout<<kod2[j2+k];
-                           break;
-                                }
-                           else{
-                           found=false;}
-                        }
-                        if(found==false)
-                            {
-                    for(int l=0;l<v3;l++)
-                                    {
-
-
-                    if(znaki[l]==in[i])
-                                        {
-                        found=true;
-                        cout<<znaki[l];
-                        if(found==true)
-                        break;
-                                        }
-                                    }
-
-                            }
-
-                    }
-        }
+    actionFunction action;
+    if(a == 1) {
+        action = encode;
+    } else if (a == 2) {
+        action = decode;
+    } else {
+        exit(EXIT_FAILURE);
     }
-//
-//
-//
-    if(a==2)
-    {
-        for(int i=0;i<v2;i++)
-        {
-            for(int j=0;j<rk1;j++)
-            {
-                if(rkod1[j]==in[i])
-                {
-                  cout<<rkod1[j+k];
-                  found=true;
-                  break;
-                }
-                  else{
-                  found=false;}
 
-            }
-                if(found==false)
-                    {
-                    for(int j2=0;j2<rk2;j2++)
-                        {
-                        if(rkod2[j2]==in[i])
-                                {
-                           found=true;
-                           cout<<rkod2[j2+k];
-                           break;
-                                }
-                           else{
-                           found=false;}
-                        }
-                        if(found==false)
-                            {
-                    for(int l=0;l<v3;l++)
-                                    {
-
-
-                    if(znaki[l]==in[i])
-                                        {
-                        found=true;
-                        cout<<znaki[l];
-                        if(found==true)
-                        break;
-                                        }
-                                    }
-
-                            }
-
-                    }
-        }
+    for(int i = 0; i < inputSize; i++) {
+        processCharacter(in[i], k, action);
+        // TODO simplify me
+        // action(in[i],k);
     }
+    return EXIT_SUCCESS;
 }
