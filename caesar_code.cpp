@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
+#include <stdlib.h> // TODO should be changed to cstdlib instead
 
 using namespace std;
 
@@ -83,7 +83,7 @@ int main() {
     for(int i = 0; i < inputSize; i++) {
         processCharacter(in[i], k, action);
         // TODO simplify me
-        // action(in[i],k);
+        // cout << action(in[i], k);
     }
     return EXIT_SUCCESS;
 }
