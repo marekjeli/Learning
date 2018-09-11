@@ -1,10 +1,8 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace std;
-
-typedef char( * actionFunction )(char, int);
 
 const int ALPHABET_SIZE = 26;
 
@@ -30,31 +28,26 @@ bool isCapitalLetter(char c) {
     return c >= 'A' && c <= 'Z';
 }
 
+char shiftLetter(char letter, bool isCapital, int offset) {
+    int firstCharacterIndex;
+    if(isCapital) {
+        firstCharacterIndex = (int) 'A';
+    } else {
+        firstCharacterIndex = (int) 'a';
+    }
+    int characterIndex = (int) letter;
+    int transformedCharacterIndex = ((ALPHABET_SIZE + characterIndex - firstCharacterIndex + offset) % ALPHABET_SIZE) + firstCharacterIndex;
+    return ((char)transformedCharacterIndex);
+}
+
 char shiftCharacter(char c, int offset) {
-    int characterIndex = (int) c;
     if(isSmallLetter(c)) {
-        int firstCharacterIndex = (int) 'a';
-        int transformedCharacterIndex = ((ALPHABET_SIZE + characterIndex - firstCharacterIndex + offset) % ALPHABET_SIZE) + firstCharacterIndex;
-        return ((char)transformedCharacterIndex);
+        return shiftLetter(c, false, offset);
     } else if(isCapitalLetter(c)) {
-        int firstCharacterIndex = (int) 'A';
-        int transformedCharacterIndex = ((ALPHABET_SIZE + characterIndex - firstCharacterIndex + offset) % ALPHABET_SIZE) + firstCharacterIndex;
-        return ((char)transformedCharacterIndex);
+        return shiftLetter(c, true, offset);
     } else {
         return c; // print it as it is
     }
-}
-
-char encode(char c, int offset) {
-    return shiftCharacter(c, offset);
-}
-
-char decode(char c, int offset) {
-    return shiftCharacter(c, -offset);
-}
-
-void processCharacter(char c, int offset, char( * action )(char, int)) {
-    cout << action(c, offset);
 }
 
 int main() {
@@ -71,19 +64,12 @@ int main() {
     cin >> in;
     int inputSize = in.size();
 
-    actionFunction action;
-    if(a == 1) {
-        action = encode;
-    } else if (a == 2) {
-        action = decode;
-    } else {
-        exit(EXIT_FAILURE);
-    }
-
     for(int i = 0; i < inputSize; i++) {
-        processCharacter(in[i], k, action);
-        // TODO simplify me
-        // action(in[i],k);
+        if(a == 1) {
+            cout << shiftCharacter(in[i], k);
+        } else {
+            cout << shiftCharacter(in[i], -k);
+        }
     }
     return EXIT_SUCCESS;
 }
