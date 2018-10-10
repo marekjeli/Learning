@@ -7,7 +7,7 @@ int place=0;
 
 int main()
 {
-    unsigned int n, t;
+    int n, t;
     cin>>n>>t;
     int t[n];
     for(int i=0;i<n;++i)
