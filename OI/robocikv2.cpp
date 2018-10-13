@@ -3,6 +3,7 @@
 using namespace std;
 
 int main() {
+    unsigned short int problematicValue=7;//gdy przedzial jest niedomkniety na poczatku a domkniety na koncu (0,1> to musze cos zrobic zeby na poczatku liczylo miejsce x=0 y=0
     unsigned int n;
     long long int t;
     cin>>n>>t;
@@ -24,6 +25,20 @@ int main() {
             switch(direction){
             case 0:
                 pky+=tab[i];
+                if(problematicValue==7){
+                    if(ppx==x && y<=pky && y>=ppy && t>0){
+                    place+=1;
+                    ppy=pky;
+                    }
+                    else{
+                    int tt=t+tab[i];
+                    if(ppx==x && y<=pky&&y>ppy && tt>=y){
+                        place+=1;
+                        }
+                    ppy=pky;
+                }
+                }
+                else{
                 if(ppx==x && y<=pky && y>ppy && t>0){
                     place+=1;
                     ppy=pky;
@@ -34,6 +49,7 @@ int main() {
                         place+=1;
                         }
                     ppy=pky;
+                    }
                     }
                 break;
 
@@ -81,8 +97,8 @@ int main() {
                     ppx=pkx;
                     }
                 break;
-
             }
+            problematicValue++;
             direction=(direction+1)%4;
             t--;
         }
